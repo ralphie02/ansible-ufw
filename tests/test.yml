@@ -4,6 +4,7 @@
   pre_tasks:
     - apt: name=ufw update_cache=yes cache_valid_time=86400
     - shell: echo "IPV6=no" >> /etc/default/ufw
+      changed_when: false
 
   roles:
     - role: my_role
