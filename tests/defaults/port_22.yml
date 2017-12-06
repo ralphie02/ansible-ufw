@@ -1,0 +1,4 @@
+---
+fw:
+  port_22:
+    - { if: eth0, port: 22, name: UFW | Testing port 22 }

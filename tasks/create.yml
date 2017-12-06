@@ -1,0 +1,10 @@
+---
+- ufw:
+    direction: "{{item.direction|default(fw_direction)}}"
+    rule: "{{item.rule|default(fw_rule)}}"
+    proto: "{{item.proto|default(fw_proto)}}"
+    port: "{{item.port|default(omit)}}"
+    if: "{{item.if|default(omit)}}"
+    from_ip: "{{item.from|default(omit)}}"
+    to_ip: "{{item.to|default(omit)}}"
+  name: "{{item.name|default(omit)}}"

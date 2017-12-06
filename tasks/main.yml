@@ -1,0 +1,19 @@
+---
+- name: UFW | Install
+  apt: name=ufw update_cache=yes cache_valid_time=86400
+
+- include_tasks: rule.yml
+  loop_control:
+    loop_var: fw_unit
+  with_items: "{{fw_list}}"
+  when: fw_list|length > 0
+
+- include_tasks: create.yml
+  with_items: "{{fw_custom}}"
+  when: fw_custom|length > 0
+
+- name: UFW | Enable
+  ufw:
+    logging: low
+    state: enabled
+  when: fw_list|length > 0 or fw_custom|length > 0

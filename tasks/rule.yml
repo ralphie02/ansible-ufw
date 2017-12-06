@@ -1,0 +1,5 @@
+---
+- include_vars: ../defaults/{{fw_unit}}.yml
+
+- include_tasks: create.yml
+  with_items: "{{fw[fw_unit]|default([])}}"

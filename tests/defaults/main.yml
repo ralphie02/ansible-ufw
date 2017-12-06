@@ -1,0 +1,7 @@
+---
+# defaults file for firewall
+fw_list: []
+fw_custom: []
+fw_direction: in
+fw_rule: allow
+fw_proto: tcp
