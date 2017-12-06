@@ -5,6 +5,7 @@ env:
   - distro: devuan
     init: /sbin/init
     run_opts: ""
+    role_dir: /etc/ansible/roles/my_role
 
 services:
   - docker
@@ -15,17 +16,17 @@ before_install:
 script:
   - container_id=$(mktemp)
   # Run container in detached state.
-  - 'sudo docker run --detach -v "${PWD}":/etc/ansible/roles/my_role:ro -v "${PWD}"/tests/defaults:/etc/ansible/roles/my_role/defaults:ro ${run_opts} ralphie02/docker-${distro}-ansible:latest ${init} > "${container_id}"'
+  - 'sudo docker run --detach -v "${PWD}":${role_dir}:ro -v "${PWD}"/tests/defaults:${role_dir}/defaults:ro ${run_opts} ralphie02/docker-${distro}-ansible:latest ${init} > "${container_id}"'
 
   # Ansible syntax check.
-  - 'sudo docker exec --tty "$(cat ${container_id})" env TERM=xterm ansible-playbook -i tests/inventory /etc/ansible/roles/my_role/tests/test.yml --syntax-check'
+  - 'sudo docker exec --tty "$(cat ${container_id})" env TERM=xterm ansible-playbook -i ${role_dir}/tests/inventory ${role_dir}/tests/test.yml --syntax-check'
 
   # Test role.
-  - 'sudo docker exec --tty "$(cat ${container_id})" env TERM=xterm ansible-playbook -i tests/inventory /etc/ansible/roles/my_role/tests/test.yml'
+  - 'sudo docker exec --tty "$(cat ${container_id})" env TERM=xterm ansible-playbook -i ${role_dir}/tests/inventory ${role_dir}/tests/test.yml'
 
   # Test role idempotence.
   - idempotence=$(mktemp)
-  - sudo docker exec "$(cat ${container_id})" ansible-playbook -i tests/inventory /etc/ansible/roles/my_role/tests/test.yml | tee -a ${idempotence}
+  - sudo docker exec "$(cat ${container_id})" ansible-playbook -i ${role_dir}/tests/inventory ${role_dir}/tests/test.yml | tee -a ${idempotence}
   - >
     tail ${idempotence}
     | grep -q 'changed=0.*failed=0'
