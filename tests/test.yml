@@ -4,4 +4,4 @@
   roles:
     - role: my_role
       vars:
-        fw_list: [slanger]
+        fw_list: [port_22, port_3000]
