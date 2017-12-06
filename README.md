@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/ralphie02/ansible-ufw.svg?branch=master)](https://travis-ci.org/ralphie02/ansible-ufw)
+
 ansible-ufw
 =========
 
