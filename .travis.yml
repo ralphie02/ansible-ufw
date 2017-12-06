@@ -2,7 +2,7 @@
 sudo: false
 
 env:
-  - distro: debian
+  - distro: devuan
     init: /sbin/init
     run_opts: ""
 
@@ -10,12 +10,12 @@ services:
   - docker
 
 before_install:
-  - 'sudo docker pull ralphie02/${distro}-ansible:${latest}'
+  - 'sudo docker pull ralphie02/docker-${distro}-ansible:${latest}'
 
 script:
   - container_id=$(mktemp)
   # Run container in detached state.
-  - 'sudo docker run --detach -v "${PWD}":/etc/ansible/roles/my_role:ro -v "${PWD}"/tests/defaults:/etc/ansible/roles/my_role/defaults:ro ${run_opts} ralphie02/${distro}-ansible:${latest} ${init} > "${container_id}"'
+  - 'sudo docker run --detach -v "${PWD}":/etc/ansible/roles/my_role:ro -v "${PWD}"/tests/defaults:/etc/ansible/roles/my_role/defaults:ro ${run_opts} ralphie02/docker-${distro}-ansible:${latest} ${init} > "${container_id}"'
 
   # Ansible syntax check.
   - 'sudo docker exec --tty "$(cat ${container_id})" env TERM=xterm ansible-playbook /etc/ansible/roles/my_role/tests/test.yml --syntax-check'
