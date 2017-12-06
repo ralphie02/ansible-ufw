@@ -1,0 +1,7 @@
+---
+- hosts: all
+
+  roles:
+    - role: my_role
+      vars:
+        fw_list: [slanger]

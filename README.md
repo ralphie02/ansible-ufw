@@ -1,38 +1,52 @@
-Role Name
+ansible-ufw
 =========
 
-A brief description of the role goes here.
+A basic role to install ufw and rules indicated in the defaults folder.
 
 Requirements
 ------------
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+The role needs the variables set correctly on a separate file indicating the port, name, interface and optional from * to IP addresses. Please see example in `Role Variables` below.
+In addition, `hash_behaviour` can be set to `merge` in order to add multiple firewall rules in one operation.
 
 Role Variables
 --------------
+```
+fw_direction: in
+fw_rule: allow
+fw_proto: tcp
+```
+based on the defaults above, the firewall rule in `sample01.yml` indicated below will allow tcp in via port 22 or if the ip corresponds with the values below.
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+sample01.yml
+```
+fw:
+  sample01:
+    - { port: 22, name: sample01 | Allow port 22  }
+    - { from_ip 192.128.128.24, to_ip: 192.128.128.25, name: sample01 | Allow from and to IP }
+```
 
-Dependencies
-------------
+Rule `sample02.yml` on the other hand, allows incoming tcp connection via port 44
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+sample02.yml
+```
+fw:
+  sample02:
+    - { port: 44, name: sample02 | Allow port 44  }
+```
+
+With `hash_behaviour` is set to `merge`, multiple files can be added to the defaults directory and allow multiple firewall rules to be created during an execution as indicated in the `Example Playbook` section below.
+
+Note that the key for the rule values should correspond to the filename; ie. `sample01` <--> `sample01.yml`
 
 Example Playbook
 ----------------
+```
+- hosts: server1
+  roles:
+     - { role: firewall, vars: { fw_list: [sample01] } }
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
-
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
-
-License
--------
-
-BSD
-
-Author Information
-------------------
-
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+- hosts: server2
+  roles:
+     - { role: firewall, vars: { fw_list: [sample01, sample02] } }
+```
