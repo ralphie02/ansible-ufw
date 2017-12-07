@@ -1,5 +1,6 @@
 ---
 - hosts: all
+  gather_facts: no
 
   pre_tasks:
     - apt: name=ufw update_cache=yes cache_valid_time=86400
@@ -10,3 +11,10 @@
     - role: my_role
       vars:
         fw_list: [port_22, port_3000]
+
+  post_tasks:
+    - shell: ufw show added
+      register: output
+      changed_when: false
+      failed_when: ('allow in on eth0 to any port 22' not in output.stdout_lines|join(' ')) or
+                   ('allow in on eth0 to any port 3000' not in output.stdout_lines|join(' '))

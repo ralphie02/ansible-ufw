@@ -9,7 +9,6 @@ Requirements
 ------------
 
 The role needs the variables set correctly on a separate file indicating the port, name, interface and optional from * to IP addresses. Please see example in `Role Variables` below.
-In addition, `hash_behaviour` can be set to `merge` in order to add multiple firewall rules in one operation.
 
 Role Variables
 --------------
@@ -36,8 +35,6 @@ fw:
   sample02:
     - { port: 44, name: sample02 | Allow port 44  }
 ```
-
-With `hash_behaviour` is set to `merge`, multiple files can be added to the defaults directory and allow multiple firewall rules to be created during an execution as indicated in the `Example Playbook` section below.
 
 Note that the key for the rule values should correspond to the filename; ie. `sample01` <--> `sample01.yml`
 
